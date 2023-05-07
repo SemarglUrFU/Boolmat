@@ -371,8 +371,11 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.2.14f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Characters/Player/PayerAnimation.cs"
 "Assets/Characters/Player/PlayerController.cs"
+"Assets/Characters/Player/PlayerInteraction.cs"
 "Assets/Characters/Player/PlayerMovement.cs"
 "Assets/Global Scripts/InputActions.cs"
+"Assets/Global Scripts/Interactable.cs"
+"Assets/Global Scripts/Lever.cs"
 -langversion:9.0
 
 /deterministic

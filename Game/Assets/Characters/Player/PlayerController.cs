@@ -1,14 +1,23 @@
 using System;
 using UnityEngine;
+using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private PlayerInteraction playerInteraction;
     private InputActions inputActions;
  
     private void Awake()
     {
         inputActions = new();
     }
+
+    private void Start()
+    {
+        inputActions.Player.Interact.started += TryInteract;
+    }
+
+    private void TryInteract(CallbackContext ctx) => playerInteraction.TryInteract();
 
     public PlayerInput GetMovementInput()
     {

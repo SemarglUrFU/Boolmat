@@ -75,19 +75,6 @@ public class PlayerMovement: MonoBehaviour
         pushingLeftWall = isAgainstLeftWall && input.direction.x < 0;
         pushingRightWall = isAgainstRightWall && input.direction.x > 0;
     }
-
-    private void DrawGrounderGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(0, _grounderOffset), _grounderRadius);
-    }
-
-    private void OnDrawGizmos()
-    {
-        DrawGrounderGizmos();
-        DrawWallSlideGizmos();
-    }
-
     #endregion
 
     #region Walking
@@ -208,13 +195,6 @@ public class PlayerMovement: MonoBehaviour
             playerRigidbody.velocity = new(0, -_slideSpeed);
 
     }
-
-    private void DrawWallSlideGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(-_wallCheckOffset, 0), _wallCheckRadius);
-        Gizmos.DrawWireSphere(transform.position + new Vector3(_wallCheckOffset, 0), _wallCheckRadius);
-    }
     #endregion
 
     #region Dash
@@ -261,6 +241,26 @@ public class PlayerMovement: MonoBehaviour
                 onDash.Invoke(false);
             }
         }
+    }
+    #endregion
+
+    #region Debug
+    private void DrawWallSlideGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position + new Vector3(-_wallCheckOffset, 0), _wallCheckRadius);
+        Gizmos.DrawWireSphere(transform.position + new Vector3(_wallCheckOffset, 0), _wallCheckRadius);
+    }
+    private void DrawGrounderGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0, _grounderOffset), _grounderRadius);
+    }
+
+    private void OnDrawGizmos()
+    {
+        DrawGrounderGizmos();
+        DrawWallSlideGizmos();
     }
     #endregion
 
