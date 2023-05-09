@@ -8228,6 +8228,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6902751790926930612, guid: ccb64e4da6e6da64b8cf245e1713a4c0, type: 3}
+      propertyPath: onDash.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6902751790926930612, guid: ccb64e4da6e6da64b8cf245e1713a4c0, type: 3}
+      propertyPath: onDash.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Dashed
+      objectReference: {fileID: 0}
+    - target: {fileID: 6902751790926930612, guid: ccb64e4da6e6da64b8cf245e1713a4c0, type: 3}
+      propertyPath: onDash.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PayerAnimation, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8161983926651805036, guid: ccb64e4da6e6da64b8cf245e1713a4c0, type: 3}
       propertyPath: levelController
       value: 

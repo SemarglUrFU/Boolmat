@@ -12,8 +12,14 @@ public class PayerAnimation : MonoBehaviour
     }
 
     public void Grounded(bool isGrounded) => animator.SetBool("IsGrounded", isGrounded);
-    public void Dashed(bool isDashing) => animator.SetTrigger("Dash");
+    public void Dashed() => animator.SetTrigger("Dash");
     public void Death() => animator.SetTrigger("Dead");
     public void WallSliding(bool isWallSliding) => animator.SetBool("IsWallSliding", isWallSliding);
-    public void ResetAnimations() => animator.SetTrigger("Reset");
+    public void ResetAnimations()
+    {
+        Grounded(true);
+        WallSliding(false);
+        VelocityChanged(Vector2.zero);
+        animator.SetTrigger("Reset");
+    }
 }

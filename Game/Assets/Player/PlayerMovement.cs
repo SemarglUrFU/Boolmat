@@ -247,7 +247,7 @@ public class PlayerMovement: MonoBehaviour
             timeStartedDash = Time.time;
             playerRigidbody.gravityScale = 0;
 
-            onDash.Invoke(true);
+            onDash.Invoke();
         }
 
         if (dashing)
@@ -261,7 +261,6 @@ public class PlayerMovement: MonoBehaviour
                 playerRigidbody.gravityScale = 1;
                 if (IsGrounded) 
                     hasDashed = false;
-                onDash.Invoke(false);
             }
         }
     }
@@ -292,6 +291,6 @@ public class PlayerMovement: MonoBehaviour
     public UnityEvent onJump;
     public UnityEvent onDoubleJump;
     public UnityEvent<bool> onWallSlide;
-    public UnityEvent<bool> onDash;
+    public UnityEvent onDash;
     public UnityEvent<bool> onGround;
 }

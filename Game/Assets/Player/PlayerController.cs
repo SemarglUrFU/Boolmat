@@ -57,7 +57,6 @@ public class PlayerController : MonoBehaviour
     {
         if ((1 << collision.gameObject.layer & deathLayer.value) == 0)
             return;
-        Debug.Log("Death");
         OnDeath.Invoke();
         playerAnimation.Death();
         levelController.RespawnPlayer();
