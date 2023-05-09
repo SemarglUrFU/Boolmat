@@ -6,7 +6,7 @@ public class PayerAnimation : MonoBehaviour
     [SerializeField] Animator animator;
     public void VelocityChanged(Vector2 direction)
     {
-        animator.SetBool("IsMovingX", Math.Abs(direction.x) > 0.0005);
+        animator.SetBool("IsMovingX", Math.Abs(direction.x) > 0.01);
         animator.SetFloat("VelocityX", direction.x);
         animator.SetFloat("VelocityY", direction.y);
     }

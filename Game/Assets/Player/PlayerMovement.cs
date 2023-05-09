@@ -10,7 +10,7 @@ public class PlayerMovement: MonoBehaviour
     private PlayerInput input;
     private bool isFacingLeft;
 
-    private void Update()
+    private void FixedUpdate()
     {
         HandleInput();
         HandleGrounding();
@@ -48,7 +48,6 @@ public class PlayerMovement: MonoBehaviour
     {
         input = playerController.GetMovementInput();
         isFacingLeft = input.direction.x != 1 && (input.direction.x == -1 || isFacingLeft);
-        SetFacingDirection(isFacingLeft);
     }
 
     private void SetFacingDirection(bool isLeft)
@@ -61,19 +60,19 @@ public class PlayerMovement: MonoBehaviour
     #region Detection
 
     [Header("Detection")]
-    [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private float _grounderOffset = -1, _grounderRadius = 0.2f;
-    [SerializeField] private float _wallCheckOffset = 0.5f, _wallCheckRadius = 0.05f;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float grounderOffset = -1, grounderRadius = 0.2f;
+    [SerializeField] private float wallCheckOffset = 0.5f, wallCheckRadius = 0.05f;
     private bool isAgainstLeftWall, isAgainstRightWall, pushingLeftWall, pushingRightWall;
     public bool IsGrounded;
 
-    private readonly Collider2D[] _ground = new Collider2D[1];
-    private readonly Collider2D[] _leftWall = new Collider2D[1];
-    private readonly Collider2D[] _rightWall = new Collider2D[1];
+    private readonly Collider2D[] ground = new Collider2D[1];
+    private readonly Collider2D[] leftWall = new Collider2D[1];
+    private readonly Collider2D[] rightWall = new Collider2D[1];
 
     private void HandleGrounding()
     {
-        var grounded = Physics2D.OverlapCircleNonAlloc((Vector2)transform.position + new Vector2(0, _grounderOffset), _grounderRadius, _ground, _groundMask) > 0;
+        var grounded = Physics2D.OverlapCircleNonAlloc((Vector2)transform.position + new Vector2(0, grounderOffset), grounderRadius, ground, groundMask) > 0;
 
         if (!IsGrounded && grounded)
         {
@@ -81,7 +80,7 @@ public class PlayerMovement: MonoBehaviour
             hasDashed = false;
             hasJumped = false;
             currentMovementLerpSpeed = 100;
-            transform.SetParent(_ground[0].transform);
+            transform.SetParent(ground[0].transform);
             onGround.Invoke(IsGrounded);
         }
         else if (IsGrounded && !grounded)
@@ -92,8 +91,8 @@ public class PlayerMovement: MonoBehaviour
             onGround.Invoke(IsGrounded);
         }
 
-        isAgainstLeftWall = Physics2D.OverlapCircleNonAlloc((Vector2)transform.position + new Vector2(-_wallCheckOffset, 0), _wallCheckRadius, _leftWall, _groundMask) > 0;
-        isAgainstRightWall = Physics2D.OverlapCircleNonAlloc((Vector2)transform.position + new Vector2(_wallCheckOffset, 0), _wallCheckRadius, _rightWall, _groundMask) > 0;
+        isAgainstLeftWall = Physics2D.OverlapCircleNonAlloc((Vector2)transform.position + new Vector2(-wallCheckOffset, 0), wallCheckRadius, leftWall, groundMask) > 0;
+        isAgainstRightWall = Physics2D.OverlapCircleNonAlloc((Vector2)transform.position + new Vector2(wallCheckOffset, 0), wallCheckRadius, rightWall, groundMask) > 0;
         pushingLeftWall = isAgainstLeftWall && input.direction.x < 0;
         pushingRightWall = isAgainstRightWall && input.direction.x > 0;
     }
@@ -101,18 +100,19 @@ public class PlayerMovement: MonoBehaviour
 
     #region Walking
     [Header("Walking")]
-    [SerializeField] private float _walkSpeed = 4;
-    [SerializeField] private float _acceleration = 2;
+    [SerializeField] private float walkSpeed = 4;
+    [SerializeField] private float acceleration = 2;
     [SerializeField] private float currentMovementLerpSpeed = 100;
 
     private void HandleWalking()
     {
         currentMovementLerpSpeed = Mathf.MoveTowards(currentMovementLerpSpeed, 100, wallJumpMovementLerp * Time.deltaTime);
 
-        if (dashing) 
-            return;
+        if (dashing) return;
 
-        var acceleration = IsGrounded ? _acceleration : _acceleration * 0.5f;
+        SetFacingDirection(isFacingLeft);
+
+        var acceleration = IsGrounded ? this.acceleration : this.acceleration * 0.5f;
 
         if (input.direction.x == -1)
         {
@@ -131,7 +131,7 @@ public class PlayerMovement: MonoBehaviour
             input.axes.x = Mathf.MoveTowards(input.axes.x, 0, acceleration * 2 * Time.deltaTime);
         }
 
-        var idealVel = new Vector2(input.axes.x * _walkSpeed, playerRigidbody.velocity.y);
+        var idealVel = new Vector2(input.axes.x * walkSpeed, playerRigidbody.velocity.y);
         playerRigidbody.velocity = Vector2.MoveTowards(playerRigidbody.velocity, idealVel, currentMovementLerpSpeed * Time.deltaTime);
     }
 
@@ -149,13 +149,14 @@ public class PlayerMovement: MonoBehaviour
     private float timeLastGroundJump;
     private float timeLastWallJump;
     private bool hasJumped;
+    private bool hasWallJumped;
     private bool hasDoubleJumped;
     private bool previousInputJump;
 
     private void HandleJumping()
     {
-        if (dashing) 
-            return;
+        if (dashing) return;
+        hasWallJumped = false;
 
         if (input.jump && !previousInputJump)
         {
@@ -163,6 +164,8 @@ public class PlayerMovement: MonoBehaviour
             {
                 timeLastWallJump = Time.time;
                 currentMovementLerpSpeed = wallJumpMovementLerp;
+                hasWallJumped = true;
+                SetFacingDirection(isAgainstRightWall);
                 ExecuteJump(new (isAgainstLeftWall ? jumpForce : -jumpForce, jumpForce));
             }
             else if ((IsGrounded || timeLastGroundJump <= Time.time + coyoteTime || enableDoubleJump && !hasDoubleJumped) 
@@ -193,18 +196,20 @@ public class PlayerMovement: MonoBehaviour
 
     #region Wall Slide
     [Header("Wall Slide")]
-    [SerializeField] private float _slideSpeed = 1;
+    [SerializeField] private float slideSpeed = 1;
     private bool wallSliding;
 
     private void HandleWallSlide()
     {
-        var sliding = !IsGrounded && (pushingLeftWall || pushingRightWall);
+        var sliding = !IsGrounded && (pushingLeftWall || pushingRightWall) && !dashing && !hasWallJumped;
 
         if (sliding && !wallSliding)
         {
-            transform.SetParent(pushingLeftWall ? _leftWall[0].transform : _rightWall[0].transform);
+            transform.SetParent(pushingLeftWall ? leftWall[0].transform : rightWall[0].transform);
             wallSliding = true;
             onWallSlide.Invoke(true);
+            hasDashed = false;
+            hasJumped = false;
         }
         else if (!sliding && wallSliding)
         {
@@ -215,32 +220,35 @@ public class PlayerMovement: MonoBehaviour
         }
 
         if (sliding) 
-            playerRigidbody.velocity = new(0, -_slideSpeed);
+            playerRigidbody.velocity = new(0, -slideSpeed);
 
     }
     #endregion
 
     #region Dash
     [Header("Dash")]
-    [SerializeField] private float dashSpeed = 3;
-    [SerializeField] private float dashLength = 0.1f;
+    [SerializeField] private float dashSpeed = 7;
+    [SerializeField] private float dashTime = 0.2f;
     [SerializeField] private float dashCooldown = 1;
     private bool hasDashed;
     private bool dashing;
     private float timeStartedDash;
-    private Vector2 dashDirection;
+    private int dashDirection;
 
     private void HandleDashing()
     {
         if (input.dash && !hasDashed && Time.time >= timeStartedDash + dashCooldown)
         {
-            dashDirection = new Vector2(input.axes.x, input.axes.y).normalized;
+            dashDirection = input.direction.x;
 
-            if (dashDirection == Vector2.zero) 
-                dashDirection = isFacingLeft ? Vector2.left : Vector2.right;
+            if (dashDirection == 0) 
+                dashDirection = isFacingLeft ? -1 : 1;
 
-            if (wallSliding)
-                dashDirection.x *= -1;
+            if (isAgainstLeftWall || isAgainstRightWall)
+            {
+                dashDirection *= -1;
+                SetFacingDirection(!isFacingLeft);
+            }
 
             dashing = true;
             hasDashed = true;
@@ -252,12 +260,12 @@ public class PlayerMovement: MonoBehaviour
 
         if (dashing)
         {
-            playerRigidbody.velocity += dashDirection * dashSpeed;
+            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x + dashDirection * dashSpeed, 0);
 
-            if (Time.time >= timeStartedDash + dashLength)
+            if (Time.time >= timeStartedDash + dashTime)
             {
                 dashing = false;
-                playerRigidbody.velocity = new (playerRigidbody.velocity.x, Math.Max(3, playerRigidbody.velocity.y));
+                playerRigidbody.velocity = new (Math.Min(5, Math.Abs(playerRigidbody.velocity.x)) * dashDirection, 0);
                 playerRigidbody.gravityScale = 1;
                 if (IsGrounded) 
                     hasDashed = false;
@@ -270,13 +278,13 @@ public class PlayerMovement: MonoBehaviour
     private void DrawWallSlideGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(-_wallCheckOffset, 0), _wallCheckRadius);
-        Gizmos.DrawWireSphere(transform.position + new Vector3(_wallCheckOffset, 0), _wallCheckRadius);
+        Gizmos.DrawWireSphere(transform.position + new Vector3(-wallCheckOffset, 0), wallCheckRadius);
+        Gizmos.DrawWireSphere(transform.position + new Vector3(wallCheckOffset, 0), wallCheckRadius);
     }
     private void DrawGrounderGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(0, _grounderOffset), _grounderRadius);
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0, grounderOffset), grounderRadius);
     }
 
     private void OnDrawGizmos()

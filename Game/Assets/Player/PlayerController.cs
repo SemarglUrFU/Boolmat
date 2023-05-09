@@ -9,11 +9,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerInteraction playerInteraction;
     [SerializeField] private PayerAnimation playerAnimation;
     [SerializeField] private LevelController levelController;
+    [SerializeField] private LayerMask winLayer;
     [SerializeField] private LayerMask deathLayer;
     private InputActions inputActions;
 
     public UnityEvent OnDeath;
- 
+    public UnityEvent OnWin;
+
     private void Awake()
     {
         inputActions = new();
@@ -29,11 +31,18 @@ public class PlayerController : MonoBehaviour
     public PlayerInput GetMovementInput()
     {
         var input = new PlayerInput();
-        input.axes = inputActions.Player.Move.ReadValue<Vector2>();
+        input.axes = Filter(inputActions.Player.Move.ReadValue<Vector2>());
         input.direction = new(Math.Sign(input.axes.x), Math.Sign(input.axes.y));
         input.jump = inputActions.Player.Jump.IsPressed();
         input.dash = inputActions.Player.Dash.IsPressed();
         return input;
+
+        static Vector2 Filter(Vector2 position, float epsilon = 0.2f)
+        {
+            position.x = Math.Abs(position.x) > epsilon ? position.x : 0;
+            position.y = Math.Abs(position.y) > epsilon ? position.y : 0;
+            return position;
+        }
     }
 
     public void ResetAnimations() => playerAnimation.ResetAnimations();
@@ -50,7 +59,16 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        HandleWin(collision);
         HandleDeath(collision);
+    }
+
+    private void HandleWin(Collision2D collision)
+    {
+        if ((1 << collision.gameObject.layer & winLayer.value) == 0)
+            return;
+        OnWin.Invoke();
+        levelController.Win();
     }
 
     private void HandleDeath(Collision2D collision)

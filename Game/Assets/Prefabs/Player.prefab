@@ -412,10 +412,16 @@ MonoBehaviour:
   playerInteraction: {fileID: 9104741712995565471}
   playerAnimation: {fileID: 6231585961658401618}
   levelController: {fileID: 0}
+  winLayer:
+    serializedVersion: 2
+    m_Bits: 536870912
   deathLayer:
     serializedVersion: 2
     m_Bits: 1073741824
   OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWin:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &6902751790926930612
@@ -433,27 +439,27 @@ MonoBehaviour:
   playerController: {fileID: 8161983926651805036}
   playerRigidbody: {fileID: 1137374798027126897}
   playerVisual: {fileID: 6266676476841386129}
-  _groundMask:
+  groundMask:
     serializedVersion: 2
     m_Bits: 8
-  _grounderOffset: -1.05
-  _grounderRadius: 0.28
-  _wallCheckOffset: 0.28
-  _wallCheckRadius: 0.05
+  grounderOffset: -1.05
+  grounderRadius: 0.28
+  wallCheckOffset: 0.28
+  wallCheckRadius: 0.15
   IsGrounded: 0
-  _walkSpeed: 7
-  _acceleration: 2
+  walkSpeed: 7
+  acceleration: 3
   currentMovementLerpSpeed: 100
-  jumpForce: 15
-  fallMultiplier: 5
-  jumpVelocityFalloff: 13
+  jumpForce: 13
+  fallMultiplier: 7
+  jumpVelocityFalloff: 10
   wallJumpLock: 0.25
   wallJumpMovementLerp: 5
   coyoteTime: 0.2
   enableDoubleJump: 1
-  _slideSpeed: 1
-  dashSpeed: 5
-  dashLength: 0.02
+  slideSpeed: 1
+  dashSpeed: 7
+  dashTime: 0.15
   dashCooldown: 1
   onChangePosition:
     m_PersistentCalls:
@@ -497,7 +503,7 @@ MonoBehaviour:
       - m_Target: {fileID: 6231585961658401618}
         m_TargetAssemblyTypeName: PayerAnimation, Assembly-CSharp
         m_MethodName: Dashed
-        m_Mode: 0
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

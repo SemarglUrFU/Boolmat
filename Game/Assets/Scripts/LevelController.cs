@@ -6,6 +6,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] PlayerController playerController;
     [SerializeField] Transform spawnPoint;
     [SerializeField] Animator sceneTransiton;
+    [SerializeField] int nextLevelId;
 
     private void Awake()
     {
@@ -31,5 +32,11 @@ public class LevelController : MonoBehaviour
         playerController.ResetAnimations();
         yield return new WaitForSeconds(0.5f);
         playerController.enabled = true;
+    }
+
+    public void Win()
+    {
+        //playerController.enabled = false;
+        Debug.Log("Win");
     }
 }
