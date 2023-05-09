@@ -1,11 +1,18 @@
 using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerInteraction playerInteraction;
+    [SerializeField] private PayerAnimation playerAnimation;
+    [SerializeField] private LevelController levelController;
+    [SerializeField] private LayerMask deathLayer;
     private InputActions inputActions;
+
+    public UnityEvent OnDeath;
  
     private void Awake()
     {
@@ -29,6 +36,8 @@ public class PlayerController : MonoBehaviour
         return input;
     }
 
+    public void ResetAnimations() => playerAnimation.ResetAnimations();
+
     private void OnEnable()
     {
         inputActions.Enable();
@@ -37,6 +46,21 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         inputActions.Disable();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        HandleDeath(collision);
+    }
+
+    private void HandleDeath(Collision2D collision)
+    {
+        if ((1 << collision.gameObject.layer & deathLayer.value) == 0)
+            return;
+        Debug.Log("Death");
+        OnDeath.Invoke();
+        playerAnimation.Death();
+        levelController.RespawnPlayer();
     }
 }
 

@@ -369,12 +369,14 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.2.14f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.2.14f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
+"Assets/Enviroment/Sprites/Door/Door.cs"
 "Assets/Player/PayerAnimation.cs"
 "Assets/Player/PlayerController.cs"
 "Assets/Player/PlayerInteraction.cs"
 "Assets/Player/PlayerMovement.cs"
 "Assets/Scripts/InputActions.cs"
 "Assets/Scripts/Interactable.cs"
+"Assets/Scripts/LevelController.cs"
 "Assets/Scripts/Lever.cs"
 "Assets/Scripts/Logic Elements/ElementAnd.cs"
 "Assets/Scripts/Logic Elements/ElementNand.cs"
@@ -387,6 +389,7 @@
 "Assets/Scripts/Logic Elements/LogicElementBase.cs"
 "Assets/Scripts/Logic Elements/LogicInput.cs"
 "Assets/Scripts/Logic Elements/LogicReceiver.cs"
+"Assets/Scripts/Menu/MainMenu.cs"
 -langversion:9.0
 
 /deterministic

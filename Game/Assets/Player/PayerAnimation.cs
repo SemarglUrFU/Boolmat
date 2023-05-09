@@ -6,13 +6,14 @@ public class PayerAnimation : MonoBehaviour
     [SerializeField] Animator animator;
     public void VelocityChanged(Vector2 direction)
     {
-        animator.SetBool("IsMovingX", Math.Abs(direction.x) > 0.0001);
+        animator.SetBool("IsMovingX", Math.Abs(direction.x) > 0.0005);
         animator.SetFloat("VelocityX", direction.x);
         animator.SetFloat("VelocityY", direction.y);
     }
 
     public void Grounded(bool isGrounded) => animator.SetBool("IsGrounded", isGrounded);
-    public void Dashed(bool isDashing) => animator.SetBool("IsDashing", isDashing);
-    public void Death(bool isDead) => animator.SetBool("IsDead", isDead);
+    public void Dashed(bool isDashing) => animator.SetTrigger("Dash");
+    public void Death() => animator.SetTrigger("Dead");
     public void WallSliding(bool isWallSliding) => animator.SetBool("IsWallSliding", isWallSliding);
+    public void ResetAnimations() => animator.SetTrigger("Reset");
 }

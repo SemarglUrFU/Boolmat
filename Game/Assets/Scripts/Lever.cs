@@ -11,6 +11,7 @@ public class Lever : Interactable
     {
         isActive = false;
         up.enabled = false;
+        logicalInput.Value = isActive;
     }
 
     public override void Interact() 

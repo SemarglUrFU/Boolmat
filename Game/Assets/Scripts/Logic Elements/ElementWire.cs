@@ -11,9 +11,11 @@ public class ElementWire : LogicElementBase
     {
         output.Value = Pass(input.Value);
 
+        var gradient = new Gradient();
         if (output.Value)
-            visual.SetColors(LogicColors.one, LogicColors.one);
+            gradient.colorKeys = new GradientColorKey[]{ new (LogicColors.one, 0f), new(LogicColors.one, 1f) };
         else
-            visual.SetColors(LogicColors.zero, LogicColors.zero);
+            gradient.colorKeys = new GradientColorKey[] { new(LogicColors.zero, 0f), new(LogicColors.zero, 1f) };
+        visual.colorGradient = gradient;
     }
 }
