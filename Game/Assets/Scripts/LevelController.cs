@@ -1,12 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LevelController : MonoBehaviour
 {
     [SerializeField] PlayerController playerController;
     [SerializeField] Transform spawnPoint;
     [SerializeField] Animator sceneTransiton;
+    [SerializeField] Image winImage;
     [SerializeField] int nextLevelId;
+    [SerializeField] string mainMenuSceneName;
 
     private void Awake()
     {
@@ -34,9 +38,14 @@ public class LevelController : MonoBehaviour
         playerController.enabled = true;
     }
 
-    public void Win()
+    public void Win() => StartCoroutine(WinCoroutine());
+    private IEnumerator WinCoroutine()
     {
-        //playerController.enabled = false;
-        Debug.Log("Win");
+        yield return new WaitForSeconds(0.2f);
+        playerController.enabled = false;
+        winImage.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        sceneTransiton.SetTrigger("SceneClosing");
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 }
