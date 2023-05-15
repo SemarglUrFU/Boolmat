@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.U2D.Animation;
 
 public class Lever : Interactable
 {

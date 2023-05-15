@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         inputActions.Player.Interact.started += TryInteract;
+        inputActions.UI.Close.started += (ctx) => levelController.OpenMenu();
     }
 
     private void TryInteract(CallbackContext ctx) => playerInteraction.TryInteract();

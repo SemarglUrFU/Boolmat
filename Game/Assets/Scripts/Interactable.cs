@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class Interactable : MonoBehaviour
+public abstract class Interactable : MonoBehaviour
 {
     public bool IsInteractable { get; set; } = true;
 
-    public virtual void Interact() {}
+    public abstract void Interact();
 
     [SerializeField] private Transform iconAchor;
     private Transform iconParent;

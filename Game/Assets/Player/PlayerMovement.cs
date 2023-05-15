@@ -260,7 +260,7 @@ public class PlayerMovement: MonoBehaviour
 
         if (dashing)
         {
-            playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x + dashDirection * dashSpeed, 0);
+            playerRigidbody.velocity = new Vector2(dashDirection * dashSpeed, 0);
 
             if (Time.time >= timeStartedDash + dashTime)
             {
