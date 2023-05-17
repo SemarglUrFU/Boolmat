@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Windows;
 using static UnityEngine.InputSystem.InputAction;
 
 public class LevelController : MonoBehaviour
@@ -55,6 +56,7 @@ public class LevelController : MonoBehaviour
     public void ExitToMainMenu() => StartCoroutine(ExitToMainMenuCoroutine());
     private IEnumerator ExitToMainMenuCoroutine()
     {
+        input.Disable();
         sceneTransiton.SetTrigger("SceneClosing");
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene(mainMenuSceneName);

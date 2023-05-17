@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -44,10 +45,12 @@ public class PlayerMovement: MonoBehaviour
     #endregion
 
     #region Inputs
+    private float facingLockUntil;
     public void HandleInput()
     {
         input = playerController.GetMovementInput();
-        isFacingLeft = input.direction.x != 1 && (input.direction.x == -1 || isFacingLeft);
+        if (facingLockUntil < Time.time)
+            isFacingLeft = input.direction.x != 1 && (input.direction.x == -1 || isFacingLeft);
     }
 
     private void SetFacingDirection(bool isLeft)
@@ -108,9 +111,9 @@ public class PlayerMovement: MonoBehaviour
     {
         currentMovementLerpSpeed = Mathf.MoveTowards(currentMovementLerpSpeed, 100, wallJumpMovementLerp * Time.deltaTime);
 
-        if (dashing) return;
-
         SetFacingDirection(isFacingLeft);
+
+        if (dashing) return;
 
         var acceleration = IsGrounded ? this.acceleration : this.acceleration * 0.5f;
 
@@ -144,6 +147,7 @@ public class PlayerMovement: MonoBehaviour
     [SerializeField] private float jumpVelocityFalloff = 8;
     [SerializeField] private float wallJumpLock = 0.25f;
     [SerializeField] private float wallJumpMovementLerp = 5;
+    [SerializeField] private float wallJumpFacingLock = 0.5f;
     [SerializeField] private float coyoteTime = 0.2f;
     [SerializeField] private bool  enableDoubleJump = true;
     private float timeLastGroundJump;
@@ -165,7 +169,8 @@ public class PlayerMovement: MonoBehaviour
                 timeLastWallJump = Time.time;
                 currentMovementLerpSpeed = wallJumpMovementLerp;
                 hasWallJumped = true;
-                SetFacingDirection(isAgainstRightWall);
+                isFacingLeft = isAgainstRightWall;
+                facingLockUntil = Time.time + wallJumpFacingLock;
                 ExecuteJump(new (isAgainstLeftWall ? jumpForce : -jumpForce, jumpForce));
             }
             else if ((IsGrounded || timeLastGroundJump <= Time.time + coyoteTime || enableDoubleJump && !hasDoubleJumped) 
@@ -247,12 +252,13 @@ public class PlayerMovement: MonoBehaviour
             if (isAgainstLeftWall || isAgainstRightWall)
             {
                 dashDirection *= -1;
-                SetFacingDirection(!isFacingLeft);
+                isFacingLeft = !isFacingLeft;
             }
 
             dashing = true;
             hasDashed = true;
             timeStartedDash = Time.time;
+            facingLockUntil = Time.time + dashTime;
             playerRigidbody.gravityScale = 0;
 
             onDash.Invoke();

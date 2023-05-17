@@ -340,6 +340,7 @@
 "Assets/Scripts/Logic Base/LogicInput.cs"
 "Assets/Scripts/Logic Base/LogicReceiver.cs"
 "Assets/Scripts/MainMenu.cs"
+"Assets/Scripts/Paralax.cs"
 -langversion:9.0
 
 /deterministic
