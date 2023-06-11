@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LevelController levelController;
     [SerializeField] private LayerMask winLayer;
     [SerializeField] private LayerMask deathLayer;
+    [SerializeField] private bool invulnerability;
     private InputActions inputActions;
 
     public UnityEvent OnDeath;
@@ -50,11 +51,13 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         inputActions.Enable();
+        invulnerability = false;
     }
 
     private void OnDisable()
     {
         inputActions.Disable();
+        invulnerability = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -70,11 +73,11 @@ public class PlayerController : MonoBehaviour
         OnWin.Invoke();
         levelController.Win();
     }
-
+    
     private void HandleDeath(Collision2D collision)
     {
-        if ((1 << collision.gameObject.layer & deathLayer.value) == 0)
-            return;
+        if (invulnerability) return;
+        if ((1 << collision.gameObject.layer & deathLayer.value) == 0) return;
         OnDeath.Invoke();
         playerAnimation.Death();
         levelController.RespawnPlayer();

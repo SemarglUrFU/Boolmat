@@ -177,7 +177,9 @@ public class PlayerMovement: MonoBehaviour
                 && (!hasJumped || hasJumped && !hasDoubleJumped))
             {
                 timeLastGroundJump = Time.time;
-                ExecuteJump(new(playerRigidbody.velocity.x, jumpForce), hasJumped);
+                var directionX = hasJumped ? input.direction.x : playerRigidbody.velocity.x;
+                ExecuteJump(new(directionX, jumpForce), hasJumped);
+
             }
         }
         previousInputJump = input.jump;
@@ -260,6 +262,7 @@ public class PlayerMovement: MonoBehaviour
             timeStartedDash = Time.time;
             facingLockUntil = Time.time + dashTime;
             playerRigidbody.gravityScale = 0;
+            playerRigidbody.position += new Vector2(0, 0.1f);
 
             onDash.Invoke();
         }
