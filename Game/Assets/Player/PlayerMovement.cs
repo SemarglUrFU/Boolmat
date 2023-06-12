@@ -177,7 +177,9 @@ public class PlayerMovement: MonoBehaviour
                 && (!hasJumped || hasJumped && !hasDoubleJumped))
             {
                 timeLastGroundJump = Time.time;
-                var directionX = hasJumped ? input.direction.x : playerRigidbody.velocity.x;
+                var directionX = hasJumped && input.direction.x != 0
+                    ? input.direction.x * jumpForce 
+                    : playerRigidbody.velocity.x;
                 ExecuteJump(new(directionX, jumpForce), hasJumped);
 
             }

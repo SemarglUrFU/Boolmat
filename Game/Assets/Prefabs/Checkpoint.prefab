@@ -91,3 +91,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 0}
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 2147483648

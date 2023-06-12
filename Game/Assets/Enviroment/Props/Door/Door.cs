@@ -7,7 +7,7 @@ public class Door : LogicReceiver
 {
     [SerializeField] Collider2D doorCollider;
     [SerializeField] Animator animator;
-    bool isOpen;
+    bool isOpen = false;
 
     [SerializeField] UnityEvent OnOpen;
     [SerializeField] UnityEvent OnClose;

@@ -386,6 +386,7 @@
 "Assets/Player/PlayerInteraction.cs"
 "Assets/Player/PlayerMovement.cs"
 "Assets/Scripts/CheckPoint.cs"
+"Assets/Scripts/Fragile.cs"
 "Assets/Scripts/InputActions.cs"
 "Assets/Scripts/Interactable.cs"
 "Assets/Scripts/LevelController.cs"
